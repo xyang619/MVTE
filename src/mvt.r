@@ -18,7 +18,7 @@ localMaxima<-function(x){
   return (index)
 }
 
-#A function to finde the index of local minimums for a give vecor x
+#A function to find the index of local minimums for a give vector x
 localMinima<-function(x){
   d1f <- diff(x) #1 order differentiation 
   index <- 0
@@ -40,17 +40,16 @@ localMinima<-function(x){
 
 solveG <- function(N, gens, breaks=2048,file="solve.pdf"){
   #N, the number of individuals sampled
-  #gens, the mean generations boostrapped, with 1 individual dropped once
+  #gens, the mean generations bootstrapped, with 1 individual randomly dropped once
   #breaks, the number of breaks in estimate density function
-  #file, the name of file output file, in which density of empirical 
-  #and simulation with recovered parameters
-  #get the density for the given vector gens
+  #file, the name of file output file, in which density of empirical and simulation 
+  #with recovered parameters got from the density for the given mean generations
   f <- density(gens, n=breaks)
   maxs <- localMaxima(f$y)  #the index of peaks
   mins <- localMinima(f$y)  #the index of low peaks
   
-  #calcualte the probability for the first peak
-  #simple intergral over the left most point to the local minimum critical point
+  #calculate the probability for the first peak
+  #simple integral over the left most point to the local minimum critical point
   prob <- 0
   index <- mins[1]
   for(i in 2:index){
@@ -61,15 +60,16 @@ solveG <- function(N, gens, breaks=2048,file="solve.pdf"){
   for(k in 2:length(mins)){
     indexp <- mins[k-1] #previous critical point
     indexc <- mins[k]   #current critical point
-    tmp <- 0 #templle value for probability of k-th wave
+    tmp <- 0 #temp value for probability of k-th wave
     for(i in (indexp+1):indexc){
       tmp <- tmp + f$y[i]*(f$x[i] - f$x[i-1])
     }
     prob <- c(prob, tmp)
   }
-  #the probability for last peak is the rest of value between 1 and the sum of previous ps
+  #the probability for last peak is the rest of value between 1 and the sum of previous p-values
   prob <- c(prob, 1-sum(prob))
-  numb <- round(N*prob) #the number of individuals in each wave, special attention should be paid to the approximation 
+  #the number of individuals in each wave, special attention should be paid to the approximation 
+  numb <- round(N*prob) 
   
   #get the mean generations estimated for each peak
   index <- maxs[1]
@@ -87,7 +87,7 @@ solveG <- function(N, gens, breaks=2048,file="solve.pdf"){
   for(i in 2:length(maxs)){
     A <- rbind(A, numb)
   }
-  #minus 1 from the diagal number
+  #minus 1 from the digonal number
   for(i in 1:length(maxs)){
     A[i,i] <- A[i,i] - 1
   }
@@ -96,7 +96,7 @@ solveG <- function(N, gens, breaks=2048,file="solve.pdf"){
   #Solve for the generations
   gsolve <- solve(A, b)
   
-  #Simulation with the recoverred parameters, 5000 times
+  #Simulation with the recovered parameters, repeat 5000 times
   sim <- rep(gsolve[1], numb[1])
   for(i in 2:length(maxs)){
     sim <- c(sim, rep(gsolve[i], numb[i]))
