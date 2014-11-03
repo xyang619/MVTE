@@ -1,26 +1,30 @@
 source("mvt.r")
-sim<-function(N=50,g=10,k=5,out="sim.pdf"){
-  sn<-round(N/2)
+sim<-function(nsamp=50,gen=10,step=5,out="sim.pdf"){
+  #nsamp	number of sample to be simulated
+  #gen		base generation
+  #step		by which step the generation increases
+  #out		outputfile name
+  sn<-round(nsamp/2)
   t<-sample(1:sn,1)
   for(i in 1:50){
     t<-c(t,sample(1:sn,1))
-    if(sum(t)>=N){
-      t[length(t)]=N-sum(t[1:length(t)-1])
+    if(sum(t)>=nsamp){
+      t[length(t)]=nsamp-sum(t[1:length(t)-1])
       break
     }
   }
   cat(t,"\n")
-  x<-rep(g,t[1])
+  x<-rep(gen,t[1])
   for(i in 2:length(t)){
-    x<-c(x,rep(g+(i-1)*k,t[i]))
+    x<-c(x,rep(gen+(i-1)*step,t[i]))
   }
-  mx<-mean(sample(x,N-1))
+  mx<-mean(sample(x,nsamp-1))
   #solveG(gens=mx,N=N)
   for(i in 2:10000){
-    mx<-c(mx,mean(sample(x,N-1)))
+    mx<-c(mx,mean(sample(x,nsamp-1)))
   }
   pdf(out)
-  title=paste("mean generation N=",N,"g=",g,"k=",k)
+  title=paste("mean generation N=",nsamp,"g=",gen,"k=",step)
   plot(density(mx),main=title)
   dev.off()
   return (mx)
