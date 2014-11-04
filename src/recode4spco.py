@@ -1,4 +1,7 @@
-'''Recode the genotype in eigenstrat format into StepPCO format'''
+'''Recode the genotype in eigenstrat format into StepPCO format
+output file extension are recommended to be sgeno
+for example
+python recode4spco.py sim.geno sim.sgeno'''
 
 import sys
 
