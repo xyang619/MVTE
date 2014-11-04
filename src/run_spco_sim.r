@@ -22,7 +22,7 @@ if (length(args) > 0){
     map <- matrix(c(PhysPos, GenMap), ncol=2)#matrix of map
     colnames(map) <- c("PhysPos", "GenMap") #Add column names
     rownames(map) <- PhysPos  #Add row names
-    PhysPos<-structure(snp$V2,.Names=as.character(snp$V1)) # A List of Physical positions
+    PhysPos<-structure(snp$V4,.Names=as.character(snp$V1)) # A List of Physical positions
     
     cat("Saving data ...\n")
     #Save data
