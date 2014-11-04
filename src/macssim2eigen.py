@@ -42,8 +42,8 @@ def gen(simfile, ninds=None ,L=1e7, prefix='sim'):
             if line.startswith('SITE'):
                 lst=line.split()
                 rsid='rs'+lst[1]
-                gp=float(lst[2])
-                pp=int(gp*L)
+				pp=int(float(lst[2])*L)
+                gp=float(lst[2])*L/100000000.0	#convert to Morgan
                 gp='{:.8f}'.format(gp)
                 a1,a2=gen_allele()
                 sf.write('{}\t{}\t{}\t{}\t{}\t{}\n'.format(rsid,chrom,gp,pp,a1,a2))
