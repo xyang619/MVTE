@@ -1,0 +1,28 @@
+1. Use MACS to simulated the populations: ancestral population 1 and 2(each 40 haplotypes), 
+and admixed population, 60 haplotypes
+
+macs 140 Length -t theta -I 3 40 40 60 ...   2>/dev/null > sim.txt
+
+2. Convert the output of MACS simulation into eigenstrat format
+
+python macssim2eigen.py -f sim.txt -n 20,20,30 -l length -p sim
+
+3. Convert from eigenstrat to StepPCO format
+
+python recode4spco.py sim.geno sim.sgeno
+
+4. Run StepPCO with bootstrapping
+
+Rscript run_spco_sim.r sim >spco_sim.log
+
+5. convert bootstrapped centers into generations
+R
+>source("center2gen.r")
+>cvtall("recsim_result.txt","sim_bs5000_center.txt",pop="sim")
+
+6. Test for multi-wave
+R
+>source("multiwave_test.r")
+>g<-read.table("sim_resamp_gen.txt",header=T)$gens
+>solveG(N=30,gens=g,"sim_solve.pdf")
+
